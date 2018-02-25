@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>函数防抖</title>
+    <style>
+        #content{
+            width: 300px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 28px;
+            font-weight: 700;
+            background: #edeaad;
+        }
+    </style>
+</head>
+<body>
+
+<div id="content"></div>
+<button id="btn">cancel</button>
+
+<script>
+    // 防抖的原理就是：你尽管触发事件，但是我一定在事件触发 n 秒后才执行，如果你在一个事件触发的 n 秒内又触发了这个事件，
+    // 那我就以新的事件的时间为准，n 秒后才执行，总之，就是要等你触发完事件 n 秒内不再触发事件，我才执行，真是任性呐!
+
+    var content = document.getElementById('content')
+    var btn = document.getElementById('btn')
+    var count = 1
+    var setUserAction = debounce(getCount, 800, true);
+
+    // content.addEventListener('mousemove', setUserAction)
+    // btn.addEventListener('click', function(){
+    //     setUserAction.cancel()
+    // })
+    //
+    // function getCount(e){
+    //     content.innerHTML = count++
+    // }
+    //
+    // function debounce(fn,wait,immediate){
+    //     var timer
+    //     var debounced = function(){
+    //         var _this = this
+    //         console.log(_this)
+    //         var args = arguments
+    //         clearTimeout(timer)
+    //         if(immediate){
+    //             var callNow = !timer
+    //             timer = setTimeout(function(){
+    //                 timer = null
+    //             },wait)
+    //             callNow?fn.call(_this,args):null;
+    //
+    //         }else{
+    //             timer = setTimeout(function(){
+    //                 fn.call(_this,args)
+    //             },wait)
+    //         }
+    //     }
+    //     debounced.cancel = function(){
+    //         clearTimeout(timer)
+    //         timer = null
+    //     }
+    //     return debounced
+    // }
+
+    //对象封装
+
+    content.addEventListener('mousemove', function(){
+        setUserAction.debounced()
+    })
+    btn.addEventListener('click', function(){
+        setUserAction.cancel()
+    })
+
+    function getCount(e){
+        content.innerHTML = count++
+    }
+
+    function debounce(fn,wait,immediate){
+        var debounceObj = {
+            timer: 0,
+            debounced() {
+                var _this = this
+                var args = arguments
+                clearTimeout(_this.timer)
+                if (immediate) {
+                    var callNow = !_this.timer
+                    _this.timer = setTimeout(function () {
+                        _this.timer = null
+                    }, wait)
+                    callNow ? fn.call(_this, args) : null;
+                } else {
+                    _this.timer = setTimeout(function () {
+                        fn.call(_this, args)
+                    }, wait)
+                }
+            },
+            cancel() {
+                clearTimeout(this.timer)
+                this.timer = null
+            }
+        }
+        return debounceObj
+    }
+
+</script>
+
+</body>
+</html>

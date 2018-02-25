@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>函数节流</title>
+    <style>
+        #content{
+            width: 300px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 28px;
+            font-weight: 700;
+            background: #edeaad;
+        }
+    </style>
+</head>
+<body>
+
+<div id="content"></div>
+<button id="btn">cancel</button>
+
+<script>
+    // 节流的原理很简单：
+    // 如果你持续触发事件，每隔一段时间，只执行一次事件。
+    // 根据首次是否执行以及结束后是否执行，效果有所不同，实现的方式也有所不同。
+    // 我们用 leading 代表首次是否执行，trailing 代表结束后是否再执行一次。
+    // 关于节流的实现，有两种主流的实现方式，一种是使用时间戳，一种是设置定时器。
+    // 以下throttle函数实现里leading、trailing不能同时设置
+
+    var content = document.getElementById('content')
+    var btn = document.getElementById('btn')
+    var count = 1
+    var setUserAction = throttle(getCount, 1000)
+    content.addEventListener('mousemove', setUserAction)
+    btn.addEventListener('click', function () {
+        setUserAction.cancel()
+    })
+
+    function getCount(e) {
+        content.innerHTML = count++
+    }
+
+    function throttle(fn, wait, options) {
+        var timer
+        var previous = 0
+        var _this
+        var args
+        options = !options ? {} : options
+        var nextCall = function () {
+            fn.call(_this, args)
+            timer = null
+            previous = options.leading === false ? 0 : new Date().getTime()
+        }
+        var throttled = function () {
+            var _this = this
+            var args = arguments
+            var nowTime = new Date().getTime()
+            if (!previous && options.leading === false) previous = nowTime
+            var nextCallTime = wait - (nowTime - previous)
+            if (nextCallTime <= 0 || nextCallTime > wait) {
+                if (timer) {
+                    clearTimeout(timer)
+                    timer = null
+                }
+                previous = nowTime
+                fn.call(_this, args)
+                if (!timer) {
+                    _this = args = null
+                }
+            } else if (!timer && options.trailing !== false) {
+                timer = setTimeout(nextCall, nextCallTime)
+            }
+        }
+        throttled.cancel = function () {
+            clearTimeout(timer)
+            previous = 0;
+            timer = null
+        }
+        return throttled
+    }
+
+</script>
+
+</body>
+</html>

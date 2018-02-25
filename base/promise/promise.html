@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>promise 简化版</title>
+</head>
+
+<body>
+    <script>
+        function Promise(fn) {
+            var status = 'pending'
+            var value = null
+
+            function successNotify(val) {
+                status = 'resolved'
+                value = val
+                todos.call(undefined, arguments)
+            }
+
+            function failNotify() {
+                status = 'rejected'
+                todos.call(undefined, arguments)
+            }
+            var successArray = []
+            var failArray = []
+
+            function todos() {
+                if (status === 'resolved') {
+                    for (let i = 0; i < successArray.length; i++) {
+                        successArray[i].call(undefined, arguments)
+                    }
+                } else if (status === 'rejected') {
+                    for (let j = 0; j < failArray.length; j++) {
+                        failArray[j].call(undefined, arguments)
+                    }
+                }
+
+            }
+            fn.call(undefined, successNotify, failNotify)
+
+            return {
+                then: function (successFn, failFn) {
+                    successArray.push(successFn)
+                    failArray.push(failFn)
+                    return undefined
+                }
+            }
+        }
+
+        let p = new Promise(function (x, y) {
+            setTimeout(() => {
+                x(101)
+            }, 3000)
+        })
+        p.then(val => {
+            console.log(val)
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>数据绑定</title>
+</head>
+
+<body>
+
+    <script>
+        //proxy
+        class BindProxy {
+            constructor(options) {
+                this.data = options.data
+                return new Proxy(this.data, {
+                    get(target, prop) {
+                        return prop in target ? target[prop] : undefined;
+                    },
+                    set(target, prop, value) {
+                        target[prop] = value
+                        console.log('update ~')
+                        return true
+                    }
+                })
+            }
+        }
+
+        var bind1 = new BindProxy({
+            data: {
+                name: 'freda'
+            }
+        })
+        console.log(bind1.name === 'freda')
+        bind1.age = 12
+        console.log(bind1.age);
+        console.log(bind1.hebit);
+        console.log(bind1);
+
+        //Object.defineProperty
+        class BindDefineProperty {
+            constructor({data}) {
+                for (let prop in data) {
+                    Object.defineProperty(this, prop, {
+                        get() {
+                            return data[prop]
+                        },
+                        set(value) {
+                            data[prop] = value
+                            console.log('update Object ~')
+                        }
+                    })
+                }
+            }
+        }
+        var bind2 = new BindDefineProperty({
+            data: {
+                name: 'jack'
+            }
+        })
+        console.log(bind2.name === 'jack')
+        bind2.age = 12
+        console.log(bind2.age);
+        console.log(bind2.name = 'haha');
+        console.log(bind2.hebit);
+        console.log(bind2);
+    </script>
+
+</body>
+
+</html>

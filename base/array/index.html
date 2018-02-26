@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>数组常用的处理情景</title>
+</head>
+<body>
+
+<script>
+    //使用map()方法和对象解构语法提取字段
+    studentInfo = [
+        { name: 'Alice', age: 18, no: 2 },
+        { name: 'Bob', age: 16, no: 5 },
+        { name: 'Candy', age: 17, no: 3 },
+        { name: 'Den', age: 18, no: 4 },
+        { name: 'Eve', age: 16, no: 1 },
+    ]
+    studentInfo.map(({name})=>name)
+    //nameList: [ 'Alice', 'Bob', 'Candy', 'Den', 'Eve' ]
+
+    //使用filter()方法和对象解构语法过滤数组
+    studentInfo.filter(({age})=>{return age<17})
+
+    //借助includes()方法求两个数组的差集
+    var a = [1, 2, {s:3}, {s:4}, {s:5}]
+    var b = [{s:2}, {s:3}, {s:4}, 'a']
+    // diff: [1, 2, {s:5}, {s:2}, "a"]
+
+    var aStr = a.map(item=> JSON.stringify(item))
+    var bStr = b.map(item=> JSON.stringify(item))
+    var diff = aStr.concat(bStr).filter(item=>{ return !aStr.includes(item) || !bStr.includes(item)}).map(item=>JSON.parse(item))
+
+</script>
+
+</body>
+</html>

@@ -11,9 +11,8 @@
     <script>
         //proxy
         class BindProxy {
-            constructor(options) {
-                this.data = options.data
-                return new Proxy(this.data, {
+            constructor({data}) {
+                return new Proxy(data, {
                     get(target, prop) {
                         return prop in target ? target[prop] : undefined;
                     },

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <button id="countdown1">click me</button>
+    <button id="countdown2">click me</button>
+
+    <script src="https://cdn.bootcss.com/jquery/2.0.1/jquery.js"></script>
+    <script>
+        var timer;
+        $('#countdown1').on('click', function (e) {
+            var $target = $(e.target)
+            var i = 10;
+            clearInterval(timer)
+            setButton($target, true, 60)
+            timer = setInterval(function () {
+                i = i - 1;
+                if (i < 0) {
+                    clearInterval(timer)
+                    setButton($target, false)
+                    return false
+                } else {
+                    setButton($target, true, i)
+                }
+            }, 1000)
+        })
+        function setButton(el, disabled, second) {
+            var $el = $(el)
+            var text = disabled ? second + 'S后重发' : '发送验证码'
+            $el.attr('disabled', disabled);
+            $el.text(text)
+        }
+
+        $('#countdown2').on('click', function (e) {
+            var $target = $(e.target)
+            var i = 10;
+            codeTime($target,10)
+        })
+
+
+        // 方式二
+        function codeTime(el, s) {
+            if (s < 0) {
+                setButton(el, false)
+                return false
+            }
+            setButton(el, true, s)
+            s = s - 1
+            setTimeout(function () {
+                codeTime(el, s)
+            }, 1000)
+        }
+
+
+        function repeat(func, times, wait){
+            // return function(){
+            //     var arg = arguments
+            //     var i = 0
+            //     var clock
+            //     clock = setInterval(()=>{
+            //         i = i+1
+            //         if(i>times){
+            //             clearInterval(clock)
+            //             return 
+            //         }
+            //         func.apply(null,arg)
+            //     },wait)
+                
+            // }
+            return function foo(){
+                var arg = arguments
+                var i = 0
+                var clock
+                var repeacted = ()=>{
+                    clock = setTimeout(()=>{
+                        i = i+1
+                        if(i>times){
+                            clearTimeout(clock)
+                            return false
+                        }
+                        func.apply(null,arg)
+                        repeacted.apply(null,arg)
+                    },wait)
+                }
+                repeacted()
+            }
+        }
+        var r1 = repeat(alert,5,1000)
+        r1(2)
+    </script>
+</body>
+</html>

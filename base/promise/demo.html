@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" id="ipt" placeholder="please input">
+
+    <button id="btnA">click a</button>
+    <button id="btnB">click b</button>
+    <script>
+        btnA.addEventListener('click', function (e) {
+            console.log(e.target)
+            compoose(ajax, { delay: 1000, url: '/from/A' })
+        })
+        btnB.addEventListener('click', function (e) {
+            console.log(e.target)
+            compoose(ajax,{delay: 2500,url: '/from/B'})
+        })
+
+        function text(str) {
+            ipt.value = str
+        }
+
+        function ajax(params) {
+            let { delay, url } = params
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    var value = url + parseInt(Math.random()*1000)
+                    console.log(value)
+                    resolve(value)
+                }, delay);
+            })
+        }
+
+        async function compoose(fn,params) {
+            let step1 = await fn(params)
+            text(step1)
+        }
+
+
+    </script>
+
+</body>
+
+</html>

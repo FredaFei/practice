@@ -13,20 +13,17 @@
         function Promise(fn) {
             var status = 'pending'
             var value = null
-
             function successNotify(val) {
                 status = 'resolved'
                 value = val
                 todos.call(undefined, arguments)
             }
-
             function failNotify() {
                 status = 'rejected'
                 todos.call(undefined, arguments)
             }
             var successArray = []
             var failArray = []
-
             function todos() {
                 if (status === 'resolved') {
                     for (let i = 0; i < successArray.length; i++) {
@@ -37,10 +34,8 @@
                         failArray[j].call(undefined, arguments)
                     }
                 }
-
             }
             fn.call(undefined, successNotify, failNotify)
-
             return {
                 then: function (successFn, failFn) {
                     successArray.push(successFn)
@@ -49,7 +44,6 @@
                 }
             }
         }
-
         let p = new Promise(function (x, y) {
             setTimeout(() => {
                 x(101)
